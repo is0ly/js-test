@@ -1,13 +1,28 @@
 import express from 'express';
-import sum from './model.js';
+import { sum, reverseSring } from './models.js';
 
 const app = express();
-
+app.use(express.json());
 const PORT = 3000;
 
-app.get('/', (req, res) => {
-  const result = sum(5, 3);
-  res.send(`${result}`);
+app.post('/sum', (req, res) => {
+  const { numbers } = req.body;
+  if (!Array.isArray(numbers)) {
+    return res.status(400).json({ error: 'Missing numbers field' });
+  }
+  const result = sum(numbers);
+  res.json({ result });
+  return '';
+});
+
+app.post('/reverse', (req, res) => {
+  const { string } = req.body;
+  if (!string) {
+    return res.status(400).json({ error: 'Missing string field' });
+  }
+  const reversedString = reverseSring(string);
+  res.json({ reversedString });
+  return '';
 });
 
 app.listen(PORT, () => {
